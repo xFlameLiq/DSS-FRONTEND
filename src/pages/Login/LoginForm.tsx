@@ -5,8 +5,9 @@ import {
   textField_container,
   textField_styles,
 } from "./Login.styles";
-import { Email, Lock } from "@mui/icons-material";
+import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { get, useController, useFormContext } from "react-hook-form";
+import { useState } from "react";
 
 type Props = {
   email: string;
@@ -15,6 +16,8 @@ type Props = {
 
 const LoginForm = ({ email, pass }: Props) => {
   const theme = useTheme();
+
+  const [showPass, setShowPass] = useState<boolean>(true);
 
   const {
     formState: { errors },
@@ -32,6 +35,11 @@ const LoginForm = ({ email, pass }: Props) => {
     control,
     defaultValue: "",
   });
+
+  const handlePass = () => {
+    setShowPass(!showPass);
+  }
+
 
   const hasEmailError = Boolean(errors[email]);
   const hasPassError = Boolean(errors[pass]);
@@ -62,8 +70,7 @@ const LoginForm = ({ email, pass }: Props) => {
               color: theme.palette.mainText.main,
             },
           }}
-          id=""
-          label=""
+          id={emailController.field.name}
           placeholder="Correo"
           helperText={get(errors, email)?.message}
           error={hasEmailError}
@@ -86,16 +93,22 @@ const LoginForm = ({ email, pass }: Props) => {
             endAdornment: (
               <InputAdornment
                 position="end"
-                sx={{ color: "green" }}
-              ></InputAdornment>
+                sx={{
+                  color: (theme) => theme.palette.icon.main,
+                  cursor: "pointer",
+                }}
+                onClick={handlePass}
+              >
+                {showPass ? <Visibility /> : <VisibilityOff/>}
+              </InputAdornment>
             ),
             style: {
               backgroundColor: theme.palette.textFieldBg.main,
               color: theme.palette.mainText.main,
             },
           }}
-          id=""
-          label=""
+          id={passController.field.name}
+          type={showPass ? "password" : "text"}
           placeholder="Contraseña"
           helperText={get(errors, pass)?.message}
           error={hasPassError}

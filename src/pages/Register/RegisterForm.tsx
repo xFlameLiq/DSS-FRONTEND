@@ -1,6 +1,6 @@
-import { Email, Lock, Person } from "@mui/icons-material";
+import { Email, Lock, Person, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Box, InputAdornment, TextField, useTheme } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { get, useController, useFormContext } from "react-hook-form";
 import { textField_container, textField_styles } from "./Register.styles";
 
@@ -12,6 +12,8 @@ type Props = {
 
 const RegisterForm = ({ name, email, pass }: Props) => {
   const theme = useTheme();
+
+  const [showPass, setShowPass] = useState<boolean>(true);
 
   const {
     formState: { errors },
@@ -35,6 +37,10 @@ const RegisterForm = ({ name, email, pass }: Props) => {
     control,
     defaultValue: "",
   });
+
+  const handlePass = () => {
+    setShowPass(!showPass);
+  }
 
   const hasEmailError = Boolean(errors[email]);
   const hasPassError = Boolean(errors[pass]);
@@ -61,11 +67,11 @@ const RegisterForm = ({ name, email, pass }: Props) => {
               ></InputAdornment>
             ),
             style: {
-                backgroundColor: theme.palette.textFieldBg.main,
-                color: theme.palette.mainText.main,
-              },
+              backgroundColor: theme.palette.textFieldBg.main,
+              color: theme.palette.mainText.main,
+            },
           }}
-          id=""
+          id={nameController.field.name}
           label=""
           placeholder="Nombre"
           helperText={get(errors, name)?.message}
@@ -96,7 +102,7 @@ const RegisterForm = ({ name, email, pass }: Props) => {
               color: theme.palette.mainText.main,
             },
           }}
-          id=""
+          id={emailController.field.name}
           label=""
           placeholder="Correo"
           helperText={get(errors, email)?.message}
@@ -120,16 +126,22 @@ const RegisterForm = ({ name, email, pass }: Props) => {
             endAdornment: (
               <InputAdornment
                 position="end"
-                sx={{ color: "green" }}
-              ></InputAdornment>
+                sx={{
+                  color: (theme) => theme.palette.icon.main,
+                  cursor: "pointer",
+                }}
+                onClick={handlePass}
+              >
+                {showPass ? <Visibility /> : <VisibilityOff/>}
+              </InputAdornment>
             ),
             style: {
               backgroundColor: theme.palette.textFieldBg.main,
               color: theme.palette.mainText.main,
             },
           }}
-          id=""
-          label=""
+          id={passController.field.name}
+          type={showPass ? "password" : "text"}
           placeholder="Contraseña"
           helperText={get(errors, pass)?.message}
           error={hasPassError}

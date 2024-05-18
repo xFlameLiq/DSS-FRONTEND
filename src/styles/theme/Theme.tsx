@@ -82,11 +82,11 @@ declare module "@mui/material/styles" {
         bg: "#03B075",
         text: "#FFFFFF"
       },
-      sidebarWidth: {
-        width: "10.5rem" 
+      success: {
+        main: "#03B075" 
       },
-      RHFerror: {
-        main: "#d32f2f"
+      error: {
+        main: "#B00303"
       },
       proceedColor: {
         main: "#4C961D"
