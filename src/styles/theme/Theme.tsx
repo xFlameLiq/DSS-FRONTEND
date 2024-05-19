@@ -88,13 +88,21 @@ declare module "@mui/material/styles" {
       error: {
         main: "#B00303"
       },
-      proceedColor: {
-        main: "#4C961D"
+      veryWeak: {
+        main: "#4AE52B"
       },
-      cancelColor: {
-        main: "#AA2F0A"
+      weak: {
+        main: "#22970A"
       },
+      medium: {
+        main: "#CADC17"
+      },
+      strong: {
+        main: "#DC2F17"
+      },
+
       mode: "light",
+
     },
     components: {
       MuiCssBaseline: {

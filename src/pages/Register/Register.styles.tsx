@@ -53,3 +53,7 @@ export const button_container: SxProps<Theme> = {
       },
   };
 
+  export const password_validators: SxProps<Theme> = {
+    color: (theme) => theme.palette.mainText.main,
+  };
+

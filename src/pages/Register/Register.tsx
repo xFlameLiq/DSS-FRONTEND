@@ -21,6 +21,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CreateNewUserType } from "@services/services_types/CreateNewUser";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
 type FormInputs = {
   name: string;
@@ -42,6 +43,12 @@ const schema = yup.object().shape({
 });
 
 const Register = ({ CreateNewUserService }: Props) => {
+
+  const [passField, setPassField] = useState<string>("");
+  const [veryWeak, setVeryWeak] = useState<boolean>(false);
+  const [weak, setWeak] = useState<boolean>(false);
+  const [medium, setMedium] = useState<boolean>(false);
+  const [strong, setStrong] = useState<boolean>(false);
   
   const { mutateAsync, isError, error, isSuccess, data } = useMutation({
     mutationKey: ["createUser"],
@@ -66,7 +73,12 @@ const Register = ({ CreateNewUserService }: Props) => {
           pass: pass,
         },
       });
-      methods.reset();
+      methods.reset(); 
+      setVeryWeak(false);
+      setWeak(false);
+      setMedium(false);
+      setStrong(false);
+      setPassField("");
     } catch (error) {
       console.error("Error creating user", error);
     }
@@ -126,7 +138,22 @@ const Register = ({ CreateNewUserService }: Props) => {
                 marginBottom: "1rem",
               }}
             >
-              <RegisterForm name="name" email="email" pass="pass" />
+              <RegisterForm 
+              name="name" 
+              email="email"
+              pass="pass" 
+              value={passField} 
+              setValue={setPassField} 
+              veryWeak={veryWeak}
+              weak={weak}
+              medium={medium}
+              strong={strong}
+              setVeryWeak={setVeryWeak}
+              setWeak={setWeak}
+              setMedium={setMedium}
+              setStrong={setStrong}
+              
+              />
             </Box>
           </FormProvider>
           {isSuccess && (
