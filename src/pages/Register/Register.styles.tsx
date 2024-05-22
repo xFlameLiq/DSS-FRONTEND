@@ -53,15 +53,6 @@ export const button_container: SxProps<Theme> = {
       },
   };
 
-  export const login_redirect: SxProps<Theme> = {
-    textDecoration: "none",
-    color: (theme) => theme.palette.loginBtn.text,
-    borderRadius: 5,
-    '&:hover': {
-        color: (theme) => theme.palette.mainText.main,
-      },
-  };
-
   export const password_validators: SxProps<Theme> = {
     color: (theme) => theme.palette.mainText.main,
   };
