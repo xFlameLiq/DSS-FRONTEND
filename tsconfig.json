@@ -4,8 +4,9 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
-
+    "noEmitOnError": false,  // Permite la emisión de archivos incluso si hay errores.
+    "skipLibCheck": true,    // Omite la verificación de tipos de archivos de declaración.
+    "forceConsistentCasingInFileNames": false, // Permite inconsistencias en el uso de mayúsculas y minúsculas en nombres de archivos.
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
