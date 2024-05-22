@@ -11,6 +11,7 @@ import {
 import {
   button_container,
   login_btn,
+  login_redirect,
   register_btn,
   textField_container,
   textField_styles,
@@ -205,7 +206,7 @@ const Register = ({ CreateNewUserService }: Props) => {
               Registrarse
             </Button>
             <Button sx={login_btn}>
-              <MuiLink component={Link} to="login">
+              <MuiLink component={Link} to="login" sx={login_redirect}>
                 Login
               </MuiLink>
             </Button>
