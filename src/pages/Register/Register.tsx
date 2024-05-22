@@ -6,6 +6,7 @@ import {
   useTheme,
   InputAdornment,
   Button,
+  Link as MuiLink,
 } from "@mui/material";
 import {
   button_container,
@@ -22,6 +23,7 @@ import * as yup from "yup";
 import { CreateNewUserType } from "@services/services_types/CreateNewUser";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 type FormInputs = {
   name: string;
@@ -43,13 +45,12 @@ const schema = yup.object().shape({
 });
 
 const Register = ({ CreateNewUserService }: Props) => {
-
   const [passField, setPassField] = useState<string>("");
   const [veryWeak, setVeryWeak] = useState<boolean>(false);
   const [weak, setWeak] = useState<boolean>(false);
   const [medium, setMedium] = useState<boolean>(false);
   const [strong, setStrong] = useState<boolean>(false);
-  
+
   const { mutateAsync, isError, error, isSuccess, data } = useMutation({
     mutationKey: ["createUser"],
     mutationFn: CreateNewUserService,
@@ -73,7 +74,7 @@ const Register = ({ CreateNewUserService }: Props) => {
           pass: pass,
         },
       });
-      methods.reset(); 
+      methods.reset();
       setVeryWeak(false);
       setWeak(false);
       setMedium(false);
@@ -138,32 +139,33 @@ const Register = ({ CreateNewUserService }: Props) => {
                 marginBottom: "1rem",
               }}
             >
-              <RegisterForm 
-              name="name" 
-              email="email"
-              pass="pass" 
-              value={passField} 
-              setValue={setPassField} 
-              veryWeak={veryWeak}
-              weak={weak}
-              medium={medium}
-              strong={strong}
-              setVeryWeak={setVeryWeak}
-              setWeak={setWeak}
-              setMedium={setMedium}
-              setStrong={setStrong}
-              
+              <RegisterForm
+                name="name"
+                email="email"
+                pass="pass"
+                value={passField}
+                setValue={setPassField}
+                veryWeak={veryWeak}
+                weak={weak}
+                medium={medium}
+                strong={strong}
+                setVeryWeak={setVeryWeak}
+                setWeak={setWeak}
+                setMedium={setMedium}
+                setStrong={setStrong}
               />
             </Box>
           </FormProvider>
           {isSuccess && (
             <>
-              <Box sx={{
-                width: "70%",
-                margin: "0 auto",
-                textAlign: "center",
-                marginBottom: "1rem"
-              }}>
+              <Box
+                sx={{
+                  width: "70%",
+                  margin: "0 auto",
+                  textAlign: "center",
+                  marginBottom: "1rem",
+                }}
+              >
                 <Typography
                   variant="h5"
                   sx={{
@@ -178,12 +180,14 @@ const Register = ({ CreateNewUserService }: Props) => {
           )}
           {isError && (
             <>
-              <Box sx={{
-                width: "70%",
-                margin: "0 auto",
-                textAlign: "center",
-                marginBottom: "1rem"
-              }}>
+              <Box
+                sx={{
+                  width: "70%",
+                  margin: "0 auto",
+                  textAlign: "center",
+                  marginBottom: "1rem",
+                }}
+              >
                 <Typography
                   variant="h5"
                   sx={{
@@ -200,8 +204,10 @@ const Register = ({ CreateNewUserService }: Props) => {
             <Button type="submit" sx={register_btn} onClick={onSubmit}>
               Registrarse
             </Button>
-            <Button sx={login_btn} href="login">
-              Login
+            <Button sx={login_btn}>
+              <MuiLink component={Link} to="login">
+                Login
+              </MuiLink>
             </Button>
           </Box>
         </Box>
