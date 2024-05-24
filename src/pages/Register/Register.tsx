@@ -39,7 +39,7 @@ const schema = yup.object().shape({
     .string()
     .email("No es un correo valido")
     .required("Campo requerido"),
-  pass: yup.string().required("Contraseña es requerida"),
+  pass: yup.string().min(8, '').required("Contraseña es requerida"),
 });
 
 const Register = ({ CreateNewUserService }: Props) => {
