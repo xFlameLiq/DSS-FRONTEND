@@ -24,6 +24,7 @@ type Props = {
   name: string;
   email: string;
   pass: string;
+  confirmPass: string;
   value: string;
   setValue: (value: string) => void;
   veryWeak: boolean;
@@ -40,6 +41,7 @@ const RegisterForm = ({
   name, 
   email, 
   pass, 
+  confirmPass,
   value, 
   setValue,
   veryWeak,
@@ -54,6 +56,7 @@ const RegisterForm = ({
   const theme = useTheme();
 
   const [showPass, setShowPass] = useState<boolean>(true);
+  const [confirmShowPass, setConfirmShowPass] = useState<boolean>(true);
 
   const {
     formState: { errors },
@@ -80,8 +83,18 @@ const RegisterForm = ({
     defaultValue: "",
   });
 
+  const confirmPassController = useController({
+    name: confirmPass,
+    control,
+    defaultValue: "",
+  });
+
   const handlePass = () => {
     setShowPass(!showPass);
+  };
+
+  const   handleConfirmPass = () => {
+    setConfirmShowPass(!confirmShowPass);
   };
 
   const securityPassword = (e) => {
@@ -110,6 +123,7 @@ const RegisterForm = ({
   const hasNameError = Boolean(errors[name]);
   const hasEmailError = Boolean(errors[email]);
   const hasPassError = Boolean(errors[pass]);
+  const hasConfirmPassError = Boolean(errors[confirmPass]);
 
   return (
     <>
@@ -213,6 +227,44 @@ const RegisterForm = ({
           placeholder="Contraseña"
           helperText={get(errors, pass)?.message}
           error={hasPassError}
+        />
+      </Box>
+
+      <Box sx={{ ...textField_container, marginBottom: "1rem" }}>
+        <TextField
+          {...confirmPassController.field}
+          sx={textField_styles}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment
+                position="start"
+                sx={{ color: (theme) => theme.palette.icon.main }}
+              >
+                <Lock />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment
+                position="end"
+                sx={{
+                  color: (theme) => theme.palette.icon.main,
+                  cursor: "pointer",
+                }}
+                onClick={handleConfirmPass}
+              >
+                {confirmShowPass ? <Visibility /> : <VisibilityOff />}
+              </InputAdornment>
+            ),
+            style: {
+              backgroundColor: theme.palette.textFieldBg.main,
+              color: theme.palette.mainText.main,
+            },
+          }}
+          id={confirmPassController.field.name}
+          type={confirmShowPass ? "password" : "text"}
+          placeholder="Confirmar contraseña"
+          helperText={get(errors, confirmPass)?.message}
+          error={hasConfirmPassError}
         />
       </Box>
       <Box

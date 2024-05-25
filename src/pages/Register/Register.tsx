@@ -27,6 +27,7 @@ type FormInputs = {
   name: string;
   email: string;
   pass: string;
+  confirmPass: string;
 };
 
 type Props = {
@@ -40,6 +41,7 @@ const schema = yup.object().shape({
     .email("No es un correo valido")
     .required("Campo requerido"),
   pass: yup.string().min(8, "Debe tener al menos 8 caracteres").required("Contraseña es requerida"),
+  confirmPass: yup.string().oneOf([yup.ref("pass")], "La contraseña no coincide").required()
 });
 
 const Register = ({ CreateNewUserService }: Props) => {
@@ -60,6 +62,7 @@ const Register = ({ CreateNewUserService }: Props) => {
       name: "",
       email: "",
       pass: "",
+      confirmPass: "",
     },
     resolver: yupResolver(schema),
   });
@@ -142,6 +145,7 @@ const Register = ({ CreateNewUserService }: Props) => {
               name="name" 
               email="email"
               pass="pass" 
+              confirmPass="confirmPass"
               value={passField} 
               setValue={setPassField} 
               veryWeak={veryWeak}

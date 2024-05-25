@@ -1,11 +1,12 @@
-import { Box, Container, Typography, useTheme, Button } from "@mui/material";
-import { button_container, login_btn, register_btn } from "./Login.styles";
+import { Box, Container, Typography, useTheme, Button, Link } from "@mui/material";
+import { button_container, login_btn, recovery_password_container, register_btn } from "./Login.styles";
 import LoginForm from "./LoginForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { LoginCredentialsType } from "@services/services_types/Login";
 import { useMutation } from "@tanstack/react-query";
+import { NavLink, Outlet } from "react-router-dom";
 
 type FormInputs = {
   email: string;
@@ -103,7 +104,6 @@ const Login = ({ ApiAuthService }: Props) => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                marginBottom: "2rem",
               }}
             >
               <LoginForm email="email" pass="pass" />
@@ -153,6 +153,11 @@ const Login = ({ ApiAuthService }: Props) => {
               </Box>
             </>
           )}
+          <Box sx={recovery_password_container}>
+                  <Link href="password-recovery"  sx={{
+                    cursor: "pointer",
+                  }}>¿Olvidaste tu contraseña?</Link>
+          </Box>
           <Box sx={button_container}>
             <Button type="submit" sx={register_btn} onClick={onSubmit}>
               Iniciar Sesión

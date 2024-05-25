@@ -1,7 +1,4 @@
 import {
-    InputLabel,
-    InputLabelProps,
-    InputProps,
     SxProps,
     Theme,
   } from "@mui/material";
@@ -52,6 +49,14 @@ import {
       '&:hover': {
           color: (theme) => theme.palette.mainText.main,
         },
+    };
+
+    export const recovery_password_container: SxProps<Theme> = {
+      display: "flex",
+      justifyContent: "flex-end",
+      width: "70%",
+      minWidth: "20rem",
+      margin: "0 auto 1rem",
     };
   
   

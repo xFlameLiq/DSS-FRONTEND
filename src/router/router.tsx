@@ -5,6 +5,7 @@ import { ThemeContextProvider } from "@styles/theme/ThemeContextProvider";
 import { createBrowserRouter } from "react-router-dom";
 import { ApiAuthImpl, CreateNewUserImpl } from "@config/ServicesContainer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import PasswordRecovery from "@pages/PasswordRecovery/PasswordRecovery";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,12 @@ export const router = createBrowserRouter([
         element: <Login ApiAuthService={ApiAuthImpl}/>,
         errorElement: "",
       },
+      {
+        path: "password-recovery",
+        element: <PasswordRecovery/>,
+        errorElement: "",
+      },
+
     ],
   },
 ]);
