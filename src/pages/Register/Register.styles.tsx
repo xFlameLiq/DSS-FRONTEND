@@ -6,6 +6,16 @@ import {
   Theme,
 } from "@mui/material";
 
+
+export const wrap_all_container: SxProps<Theme> = {
+  width: "100%",
+  height: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center"
+};
+
+
 export const textField_container: SxProps<Theme> = {
   width: "70%",
   minWidth: "20rem",
@@ -43,6 +53,7 @@ export const button_container: SxProps<Theme> = {
     color: (theme) => theme.palette.registerBtn.text,
     borderRadius: 5,
   };
+  
   export const login_btn: SxProps<Theme> = {
     padding: "1rem",
     backgroundColor: (theme) => theme.palette.loginBtn.bg,

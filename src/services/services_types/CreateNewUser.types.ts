@@ -2,6 +2,7 @@ export type  CreateNewUser= {
     name: string;
     email: string;
     pass: string;
+    emailRecovery: string;
 }
 
 export type CreateNewUserRequest = {

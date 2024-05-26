@@ -1,12 +1,11 @@
 import { Box, Container, Typography, useTheme, Button, Link } from "@mui/material";
-import { button_container, login_btn, recovery_password_container, register_btn } from "./Login.styles";
+import { button_container, login_btn, recovery_password_container, register_btn, wrap_all_container } from "./Login.styles";
 import LoginForm from "./LoginForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { LoginCredentialsType } from "@services/services_types/Login";
+import { LoginCredentialsType } from "@services/services_types/Login.types";
 import { useMutation } from "@tanstack/react-query";
-import { NavLink, Outlet } from "react-router-dom";
 
 type FormInputs = {
   email: string;
@@ -14,7 +13,7 @@ type FormInputs = {
 };
 
 type Props = {
-  ApiAuthService: LoginCredentialsType;
+  AuthService: LoginCredentialsType;
 };
 
 const schema = yup.object().shape({
@@ -25,10 +24,10 @@ const schema = yup.object().shape({
   pass: yup.string().required("Contraseña es requerida"),
 });
 
-const Login = ({ ApiAuthService }: Props) => {
+const Login = ({ AuthService }: Props) => {
   const { mutateAsync, isError, error, isSuccess, data } = useMutation({
     mutationKey: ["auth"],
-    mutationFn: ApiAuthService,
+    mutationFn: AuthService,
   });
 
   const methods = useForm<FormInputs>({
@@ -48,8 +47,9 @@ const Login = ({ ApiAuthService }: Props) => {
         },
       });
       methods.reset();
+      console.log(response);
     } catch (error) {
-      console.error("Error creating user", error);
+      console.error("Error login user", error);
     }
   });
 
@@ -57,10 +57,10 @@ const Login = ({ ApiAuthService }: Props) => {
 
   return (
     <>
+    <Box sx={wrap_all_container}>
       <Container
         maxWidth="tablet"
         sx={{
-          marginTop: "10rem",
           padding: "0",
         }}
       >
@@ -169,6 +169,7 @@ const Login = ({ ApiAuthService }: Props) => {
         </Box>
         {JSON.stringify(methods.watch())}
       </Container>
+      </Box> 
     </>
   );
 };

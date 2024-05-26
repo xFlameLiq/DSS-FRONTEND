@@ -1,103 +1,90 @@
-import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  useTheme,
-  InputAdornment,
-  Button,
-} from "@mui/material";
+import { Box, Button, Container, Typography, useTheme } from "@mui/material";
 import {
   button_container,
   login_btn,
-  register_btn,
-  textField_container,
-  textField_styles,
+  update_btn,
   wrap_all_container,
-} from "./Register.styles";
-import { Email, Lock, Person } from "@mui/icons-material";
-import RegisterForm from "./RegisterForm";
+} from "./UpdatePassword.styles";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CreateNewUserType } from "@services/services_types/CreateNewUser.types";
+import UpdatePasswordForm from "./UpdatePasswordForm";
+import { useEffect, useState } from "react";
+import { UpdatePasswordType } from "@services/services_types/UpdatePassword.types";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useUpdatePasswordContext } from "@hooks/useUpdatePasswordContext";
 
 type FormInputs = {
-  name: string;
-  email: string;
-  pass: string;
-  confirmPass: string;
-  emailRecovery: string;
+  newPass: string;
+  newConfirmPass: string;
 };
 
 type Props = {
-  CreateNewUserService: CreateNewUserType;
-};
+    UpdatePasswordService: UpdatePasswordType;
+  };
 
 const schema = yup.object().shape({
-  name: yup.string().required("Se requiere un nombre"),
-  email: yup
-    .string()
-    .email("No es un correo valido")
-    .required("Campo requerido"),
-  pass: yup
+  newPass: yup
     .string()
     .min(8, "Debe tener al menos 8 caracteres")
     .required("Contraseña es requerida"),
-  confirmPass: yup
+  newConfirmPass: yup
     .string()
-    .oneOf([yup.ref("pass")], "La contraseña no coincide")
+    .oneOf([yup.ref("newPass")], "La contraseña no coincide")
     .required(),
-  emailRecovery: yup
-    .string()
-    .email("No es un correo valido")
-    .required("Campo requerido"),
 });
 
-const Register = ({ CreateNewUserService }: Props) => {
+const UpdatePassword = ({UpdatePasswordService}: Props) => {
   const [passField, setPassField] = useState<string>("");
   const [veryWeak, setVeryWeak] = useState<boolean>(false);
   const [weak, setWeak] = useState<boolean>(false);
   const [medium, setMedium] = useState<boolean>(false);
   const [strong, setStrong] = useState<boolean>(false);
 
-  const { mutateAsync, isError, error, isSuccess, data } = useMutation({
-    mutationKey: ["createUser"],
-    mutationFn: CreateNewUserService,
+  const {url, setUrl} = useUpdatePasswordContext();
+
+  const { data, mutateAsync, isError, error, isSuccess } = useMutation({
+    mutationKey: ["UpdatePassword"],
+    mutationFn: UpdatePasswordService,
   });
+
+  useEffect(() => {
+    let email = localStorage.getItem('email');
+    email = JSON.parse(email);
+    setUrl(email)
+  }, [url])
+  
 
   const methods = useForm<FormInputs>({
     defaultValues: {
-      name: "",
-      email: "",
-      pass: "",
-      confirmPass: "",
-      emailRecovery: "",
+      newPass: "",
+      newConfirmPass: "",
     },
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = methods.handleSubmit(async ({ name, email, pass, emailRecovery }) => {
+  const onSubmit = methods.handleSubmit(async ({ newPass, newConfirmPass }) => {
+    console.log(newPass);
+    console.log(newConfirmPass);
     try {
-      const response = await mutateAsync({
-        request: {
-          name: name,
-          email: email,
-          pass: pass,
-          emailRecovery: emailRecovery
-        },
-      });
-      methods.reset();
-      setVeryWeak(false);
-      setWeak(false);
-      setMedium(false);
-      setStrong(false);
-      setPassField("");
-    } catch (error) {
-      console.error("Error creating user", error);
-    }
+        const response = await mutateAsync({
+          request: {
+            email: url,
+            newPass: newPass
+          },
+        });
+        console.log(response);
+      } catch (error) {
+        console.error("Error recovering email", error);
+      }
+    methods.reset();
+    localStorage.removeItem('email');
+    setUrl("");
+    setVeryWeak(false);
+    setWeak(false);
+    setMedium(false);
+    setStrong(false);
+    setPassField("");
   });
 
   const theme = useTheme();
@@ -113,7 +100,7 @@ const Register = ({ CreateNewUserService }: Props) => {
         >
           <Box
             sx={{
-              backgroundColor: (theme) => theme.palette.backgroundForm.main,
+              backgroundColor: theme.palette.backgroundForm.main,
               padding: "2rem",
               borderRadius: 10,
             }}
@@ -129,7 +116,7 @@ const Register = ({ CreateNewUserService }: Props) => {
               <Typography
                 variant="h5"
                 sx={{
-                  color: (theme) => theme.palette.mainText.main,
+                  color: theme.palette.mainText.main,
                   fontWeight: "700",
                   "&::after": {
                     content: "''",
@@ -138,11 +125,11 @@ const Register = ({ CreateNewUserService }: Props) => {
                     right: "calc(50% - 50px)",
                     width: "100px",
                     height: "0.2rem",
-                    backgroundColor: (theme) => theme.palette.icon.main,
+                    backgroundColor: theme.palette.icon.main,
                   },
                 }}
               >
-                REGISTRO
+                ACTUALIZAR CONTRASEÑA
               </Typography>
             </Box>
             <FormProvider {...methods}>
@@ -154,12 +141,9 @@ const Register = ({ CreateNewUserService }: Props) => {
                   marginBottom: "1rem",
                 }}
               >
-                <RegisterForm
-                  name="name"
-                  email="email"
-                  pass="pass"
-                  confirmPass="confirmPass"
-                  emailRecovery="emailRecovery"
+                <UpdatePasswordForm
+                  newPass="newPass"
+                  newConfirmPass="newConfirmPass"
                   value={passField}
                   setValue={setPassField}
                   veryWeak={veryWeak}
@@ -190,7 +174,7 @@ const Register = ({ CreateNewUserService }: Props) => {
                       color: theme.palette.success.main,
                     }}
                   >
-                    User created successfully {data}
+                    La contraseña ha sido cambiada {data}
                   </Typography>
                 </Box>
               </>
@@ -218,19 +202,20 @@ const Register = ({ CreateNewUserService }: Props) => {
               </>
             )}
             <Box sx={button_container}>
-              <Button type="submit" sx={register_btn} onClick={onSubmit}>
-                Registrarse
+              <Button type="submit" sx={update_btn} onClick={onSubmit}>
+                Actualizar contraseña
               </Button>
-              <Button sx={login_btn} href="login">
-                Login
+              <Button href="login" sx={login_btn}>
+                Volver a Login
               </Button>
             </Box>
           </Box>
           {JSON.stringify(methods.watch())}
         </Container>
+
       </Box>
     </>
   );
 };
 
-export default Register;
+export default UpdatePassword;

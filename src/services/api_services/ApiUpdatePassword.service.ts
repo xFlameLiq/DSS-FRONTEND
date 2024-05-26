@@ -1,21 +1,20 @@
-import { CreateNewUserType } from "@services/services_types/CreateNewUser.types";
+import { UpdatePasswordType } from "@services/services_types/UpdatePassword.types";
 import axios, { AxiosError } from "axios";
 
-export const ApiCreateNewUser: CreateNewUserType = async ({ request: {
-    name, email, pass, emailRecovery
-} }) => {
+export const ApiUpdatePassword: UpdatePasswordType = async ({ 
+    request: {
+        email,
+        newPass
+    } 
+}) => {
 
-    if (!name) throw new Error("No hay un nombre");
-    if (!email) throw new Error("No hay un correo");
-    if (!pass) throw new Error("No hay una contraseña");
+    if (!newPass) throw new Error("No hay una nueva contraseña por actualizar");
     try {
-        const response = await axios("http://localhost:8080/users", {
+        const response = await axios("http://localhost:8080/update-password", {
             method: "POST",
             data: {
-                name: name,
                 email: email,
-                password: pass,
-                emailRecovery: emailRecovery,
+                newPass: newPass
             }
         });
         return response.status;
@@ -24,6 +23,7 @@ export const ApiCreateNewUser: CreateNewUserType = async ({ request: {
             const axiosError = error as AxiosError;
             if (axiosError.response) {
                 const serverError = axiosError.response.data as AxiosError;
+                console.log(serverError);
                 throw new Error(serverError.message + " " + serverError.code);
             }
             throw new Error("Error al conectar con el servidor");

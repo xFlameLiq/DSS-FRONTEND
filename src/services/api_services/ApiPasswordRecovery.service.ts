@@ -1,29 +1,29 @@
-import { CreateNewUserType } from "@services/services_types/CreateNewUser.types";
+import { PasswordRecoveryType } from "@services/services_types/PasswordRecovery.types";
 import axios, { AxiosError } from "axios";
 
-export const ApiCreateNewUser: CreateNewUserType = async ({ request: {
-    name, email, pass, emailRecovery
+export const ApiPasswordRecovery: PasswordRecoveryType = async ({ request: {
+    emailRecovery
 } }) => {
 
-    if (!name) throw new Error("No hay un nombre");
-    if (!email) throw new Error("No hay un correo");
-    if (!pass) throw new Error("No hay una contraseña");
+    if (!emailRecovery) throw new Error("No hay un correo de recuperación");
     try {
-        const response = await axios("http://localhost:8080/users", {
+        const response = await axios("http://localhost:8080/password-recovery", {
             method: "POST",
             data: {
-                name: name,
-                email: email,
-                password: pass,
-                emailRecovery: emailRecovery,
+                emailRecovery: emailRecovery
             }
         });
-        return response.status;
+        const {data, status} = response;
+        return {
+            data,
+            status
+        };
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;
             if (axiosError.response) {
                 const serverError = axiosError.response.data as AxiosError;
+                console.log(serverError);
                 throw new Error(serverError.message + " " + serverError.code);
             }
             throw new Error("Error al conectar con el servidor");

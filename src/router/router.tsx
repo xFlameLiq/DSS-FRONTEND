@@ -3,9 +3,11 @@ import Login from "@pages/Login/Login";
 import Register from "@pages/Register/Register";
 import { ThemeContextProvider } from "@styles/theme/ThemeContextProvider";
 import { createBrowserRouter } from "react-router-dom";
-import { ApiAuthImpl, CreateNewUserImpl } from "@config/ServicesContainer";
+import { ApiAuthImpl, CreateNewUserImpl, PasswordRecoveryImpl, UpdatePasswordImpl } from "@config/ServicesContainer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PasswordRecovery from "@pages/PasswordRecovery/PasswordRecovery";
+import UpdatePassword from "@pages/PasswordRecovery/UpdatePassword";
+import { UpdatePasswordContextProvider } from "@contexts/UpdatePasswordContext";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +17,9 @@ export const router = createBrowserRouter([
     element: 
     <ThemeContextProvider>
         <QueryClientProvider client={queryClient}>
+          <UpdatePasswordContextProvider>
           <Index />
+          </UpdatePasswordContextProvider>
         </QueryClientProvider>
     </ThemeContextProvider>,
     errorElement: "",
@@ -27,12 +31,17 @@ export const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login ApiAuthService={ApiAuthImpl}/>,
+        element: <Login AuthService={ApiAuthImpl}/>,
         errorElement: "",
       },
       {
         path: "password-recovery",
-        element: <PasswordRecovery/>,
+        element: <PasswordRecovery PasswordRecoveryService={PasswordRecoveryImpl}/>,
+        errorElement: "",
+      },
+      {
+        path: "update-password",
+        element: <UpdatePassword UpdatePasswordService={UpdatePasswordImpl}/>,
         errorElement: "",
       },
 
