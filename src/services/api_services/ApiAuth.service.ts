@@ -6,6 +6,7 @@ export const ApiAuth: LoginCredentialsType = async ({ request: {
 } }) => {
     if (!email) throw new Error("No hay un correo");
     if (!pass) throw new Error("No hay una contraseña");
+    
     try {
         const response = await axios("https://dss-backend-b44f.onrender.com/login", {
             method: "POST",
