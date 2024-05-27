@@ -8,11 +8,11 @@ export const ApiAuth: LoginCredentialsType = async ({ request: {
     if (!pass) throw new Error("No hay una contraseña");
     
     try {
-        const response = await axios("https://dss-backend-b44f.onrender.com/login", {
+        const response = await axios("http://localhost:8080/auth", {
             method: "POST",
             data: {
                 email: email,
-                password: pass,
+                pass: pass,
             }
         });
         return response.status;

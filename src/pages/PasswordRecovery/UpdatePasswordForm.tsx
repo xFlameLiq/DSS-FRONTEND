@@ -1,33 +1,12 @@
-import {
-  Email,
-  Lock,
-  LockReset,
-  Person,
-  Visibility,
-  VisibilityOff,
-  MailLock,
-} from "@mui/icons-material";
-import {
-  Box,
-  InputAdornment,
-  TextField,
-  useTheme,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
+import { Box, InputAdornment, TextField, Typography, useTheme } from "@mui/material";
 import { get, useController, useFormContext } from "react-hook-form";
-import {
-  password_validators,
-  textField_container,
-  textField_styles,
-} from "./Register.styles";
+import { textField_styles, textField_container, password_validators } from "./UpdatePassword.styles";
+import { Lock, LockReset, Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
 
 type Props = {
-  name: string;
-  email: string;
-  pass: string;
-  confirmPass: string;
-  emailRecovery: string;
+  newPass: string;
+  newConfirmPass: string;
   value: string;
   setValue: (value: string) => void;
   veryWeak: boolean;
@@ -40,27 +19,23 @@ type Props = {
   setStrong: (value: boolean) => void;
 };
 
-const RegisterForm = ({ 
-  name, 
-  email, 
-  pass, 
-  confirmPass,
-  emailRecovery,
-  value, 
-  setValue,
-  veryWeak,
-  weak,
-  medium,
-  strong,
-  setVeryWeak,
-  setWeak,
-  setMedium,
-  setStrong,
+const UpdatePasswordForm = ({ 
+    newPass, 
+    newConfirmPass,
+    value, 
+    setValue,
+    veryWeak,
+    weak,
+    medium,
+    strong,
+    setVeryWeak,
+    setWeak,
+    setMedium,
+    setStrong,
 }: Props) => {
-  const theme = useTheme();
 
-  const [showPass, setShowPass] = useState<boolean>(true);
-  const [confirmShowPass, setConfirmShowPass] = useState<boolean>(true);
+    const [showPass, setShowPass] = useState<boolean>(true);
+    const [confirmShowPass, setConfirmShowPass] = useState<boolean>(true);
 
   const {
     formState: { errors },
@@ -69,55 +44,32 @@ const RegisterForm = ({
     clearErrors,
   } = useFormContext();
 
-  const nameController = useController({
-    name: name,
+  const newPassController = useController({
+    name: newPass,
     control,
     defaultValue: "",
   });
 
-  const emailController = useController({
-    name: email,
+  const newConfirmPassController = useController({
+    name: newConfirmPass,
     control,
     defaultValue: "",
   });
 
-  const passController = useController({
-    name: pass,
-    control,
-    defaultValue: "",
-  });
-
-  const confirmPassController = useController({
-    name: confirmPass,
-    control,
-    defaultValue: "",
-  });
-
-  const emailRecoveryController = useController({
-    name: emailRecovery,
-    control,
-    defaultValue: "",
-  })
-
-  const handlePass = () => {
-    setShowPass(!showPass);
-  };
-
-  const   handleConfirmPass = () => {
-    setConfirmShowPass(!confirmShowPass);
-  };
+  const hasNewPassError = Boolean(errors[newPass]);
+  const hasNewConfirmPassError = Boolean(errors[newConfirmPass]);
 
   const securityPassword = (e) => {
     const passwordSecurity = e?.target.value;
-    RHFValue("pass", passwordSecurity);
+    RHFValue("newPass", passwordSecurity);
     setValue(passwordSecurity);
 
     const hasLowerCase = /[a-z]/.test(passwordSecurity);
     const hasUpperCase = /[A-Z]/.test(passwordSecurity);
     const hasNumbers = /[0-9]/.test(passwordSecurity);
     const hasSpecialChar = /[!"#$%&'*+,-./:;?@^_]/.test(passwordSecurity);
-    clearErrors(passController.field.name);
-    clearErrors(nameController.field.name);
+    clearErrors(newPassController.field.name);
+    clearErrors(newConfirmPassController.field.name);
     if (hasLowerCase) {
       setVeryWeak(true);
     } else {
@@ -130,86 +82,29 @@ const RegisterForm = ({
     setStrong(hasSpecialChar);
   };
 
-  const hasNameError = Boolean(errors[name]);
-  const hasEmailError = Boolean(errors[email]);
-  const hasPassError = Boolean(errors[pass]);
-  const hasConfirmPassError = Boolean(errors[confirmPass]);
-  const hasEmailRecoveryError = Boolean(errors[emailRecovery]);
+  const handlePass = () => {
+    setShowPass(!showPass);
+  };
+
+  const  handleConfirmPass = () => {
+    setConfirmShowPass(!confirmShowPass);
+  };
+
+  const theme = useTheme();
+
+
 
   return (
     <>
-      <Box sx={textField_container}>
-        <TextField
-          {...nameController.field}
-          sx={textField_styles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment
-                position="start"
-                sx={{ color: (theme) => theme.palette.icon.main }}
-              >
-                <Person />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                sx={{ color: "green" }}
-              ></InputAdornment>
-            ),
-            style: {
-              backgroundColor: theme.palette.textFieldBg.main,
-              color: theme.palette.mainText.main,
-            },
-          }}
-          id={nameController.field.name}
-          label=""
-          placeholder="Nombre"
-          helperText={get(errors, name)?.message}
-          error={hasNameError}
-        />
-      </Box>
-      <Box sx={textField_container}>
-        <TextField
-          {...emailController.field}
-          sx={textField_styles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment
-                position="start"
-                sx={{ color: (theme) => theme.palette.icon.main }}
-              >
-                <Email />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                sx={{ color: "green" }}
-              ></InputAdornment>
-            ),
-            style: {
-              backgroundColor: theme.palette.textFieldBg.main,
-              color: theme.palette.mainText.main,
-            },
-          }}
-          id={emailController.field.name}
-          label=""
-          placeholder="Correo"
-          helperText={get(errors, email)?.message}
-          error={hasEmailError}
-        />
-      </Box>
-
       <Box sx={{ ...textField_container, marginBottom: "1rem" }}>
         <TextField
-          {...passController.field}
+          {...newPassController.field}
           sx={textField_styles}
           InputProps={{
             startAdornment: (
               <InputAdornment
                 position="start"
-                sx={{ color: (theme) => theme.palette.icon.main }}
+                sx={{ color: theme.palette.icon.main }}
               >
                 <Lock />
               </InputAdornment>
@@ -218,7 +113,7 @@ const RegisterForm = ({
               <InputAdornment
                 position="end"
                 sx={{
-                  color: (theme) => theme.palette.icon.main,
+                  color: theme.palette.icon.main,
                   cursor: "pointer",
                 }}
                 onClick={handlePass}
@@ -231,19 +126,19 @@ const RegisterForm = ({
               color: theme.palette.mainText.main,
             },
           }}
-          id={passController.field.name}
+          id={newPassController.field.name}
           value={value}
           onChange={securityPassword}
           type={showPass ? "password" : "text"}
-          placeholder="Contraseña"
-          helperText={get(errors, pass)?.message}
-          error={hasPassError}
+          placeholder="Nueva contraseña"
+          helperText={get(errors, newPass)?.message}
+          error={hasNewPassError}
         />
       </Box>
 
       <Box sx={{ ...textField_container, marginBottom: "1rem" }}>
         <TextField
-          {...confirmPassController.field}
+          {...newConfirmPassController.field}
           sx={textField_styles}
           InputProps={{
             startAdornment: (
@@ -271,42 +166,11 @@ const RegisterForm = ({
               color: theme.palette.mainText.main,
             },
           }}
-          id={confirmPassController.field.name}
+          id={newConfirmPassController.field.name}
           type={confirmShowPass ? "password" : "text"}
-          placeholder="Confirmar contraseña"
-          helperText={get(errors, confirmPass)?.message}
-          error={hasConfirmPassError}
-        />
-      </Box>
-      <Box sx={textField_container}>
-        <TextField
-          {...emailRecoveryController.field}
-          sx={textField_styles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment
-                position="start"
-                sx={{ color: (theme) => theme.palette.icon.main }}
-              >
-                <MailLock />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                sx={{ color: "green" }}
-              ></InputAdornment>
-            ),
-            style: {
-              backgroundColor: theme.palette.textFieldBg.main,
-              color: theme.palette.mainText.main,
-            },
-          }}
-          id={emailRecoveryController.field.name}
-          label=""
-          placeholder="Correo de recuperación"
-          helperText={get(errors, emailRecovery)?.message}
-          error={hasEmailRecoveryError}
+          placeholder="Confirmar nueva contraseña"
+          helperText={get(errors, newConfirmPass)?.message}
+          error={hasNewConfirmPassError}
         />
       </Box>
       <Box
@@ -410,4 +274,4 @@ const RegisterForm = ({
   );
 };
 
-export default RegisterForm;
+export default UpdatePasswordForm;

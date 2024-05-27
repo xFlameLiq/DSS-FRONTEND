@@ -2,6 +2,16 @@ import {
     SxProps,
     Theme,
   } from "@mui/material";
+
+
+  export const wrap_all_container: SxProps<Theme> = {
+    width: "100%",
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  };
+
   
   export const textField_container: SxProps<Theme> = {
     width: "70%",
