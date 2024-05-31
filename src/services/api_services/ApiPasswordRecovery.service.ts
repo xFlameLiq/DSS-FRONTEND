@@ -24,6 +24,7 @@ export const ApiPasswordRecovery: PasswordRecoveryType = async ({ request: {
             if (axiosError.response) {
                 const serverError = axiosError.response.data as AxiosError;
                 console.log(serverError);
+                throw new Error(serverError.message);
                 throw new Error(serverError.message + " " + serverError.code);
             }
             throw new Error("Error al conectar con el servidor");

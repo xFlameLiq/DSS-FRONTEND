@@ -28,6 +28,9 @@ const Login = ({ AuthService }: Props) => {
   const { mutateAsync, isError, error, isSuccess, data } = useMutation({
     mutationKey: ["auth"],
     mutationFn: AuthService,
+    onSettled: (data) => {
+      console.log(data);
+    }
   });
 
   const methods = useForm<FormInputs>({
@@ -126,7 +129,7 @@ const Login = ({ AuthService }: Props) => {
                     color: theme.palette.success.main,
                   }}
                 >
-                  User Logged successfully {data}
+                  Usuario logueado {data}
                 </Typography>
               </Box>
             </>

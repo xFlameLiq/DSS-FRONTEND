@@ -6,6 +6,9 @@ import {
   Visibility,
   VisibilityOff,
   MailLock,
+  LocationOn,
+  Female,
+  Male,
 } from "@mui/icons-material";
 import {
   Box,
@@ -24,7 +27,11 @@ import {
 
 type Props = {
   name: string;
+  paternal_surname: string;
+  maternal_surname: string;
   email: string;
+  cp: string;
+  birthdate: string;
   pass: string;
   confirmPass: string;
   emailRecovery: string;
@@ -40,13 +47,17 @@ type Props = {
   setStrong: (value: boolean) => void;
 };
 
-const RegisterForm = ({ 
-  name, 
-  email, 
-  pass, 
+const RegisterForm = ({
+  name,
+  paternal_surname,
+  maternal_surname,
+  email,
+  cp,
+  birthdate,
+  pass,
   confirmPass,
   emailRecovery,
-  value, 
+  value,
   setValue,
   veryWeak,
   weak,
@@ -75,11 +86,37 @@ const RegisterForm = ({
     defaultValue: "",
   });
 
+  const paternalController = useController({
+    name: paternal_surname,
+    control,
+    defaultValue: "",
+  });
+
+
+  const maternalController = useController({
+    name: maternal_surname,
+    control,
+    defaultValue: "",
+  });
+
   const emailController = useController({
     name: email,
     control,
     defaultValue: "",
   });
+
+  const cpController = useController({
+    name: cp,
+    control,
+    defaultValue: "",
+  });
+
+  const birthdateController = useController({
+    name: birthdate,
+    control,
+    defaultValue: "",
+  });
+
 
   const passController = useController({
     name: pass,
@@ -97,13 +134,13 @@ const RegisterForm = ({
     name: emailRecovery,
     control,
     defaultValue: "",
-  })
+  });
 
   const handlePass = () => {
     setShowPass(!showPass);
   };
 
-  const   handleConfirmPass = () => {
+  const handleConfirmPass = () => {
     setConfirmShowPass(!confirmShowPass);
   };
 
@@ -131,7 +168,11 @@ const RegisterForm = ({
   };
 
   const hasNameError = Boolean(errors[name]);
+  const hasPaternalError = Boolean(errors[paternal_surname]);
+  const hasMaternalError = Boolean(errors[maternal_surname]);
   const hasEmailError = Boolean(errors[email]);
+  const hasCPError = Boolean(errors[cp]);
+  const hasBirthdateError = Boolean(errors[birthdate]);
   const hasPassError = Boolean(errors[pass]);
   const hasConfirmPassError = Boolean(errors[confirmPass]);
   const hasEmailRecoveryError = Boolean(errors[emailRecovery]);
@@ -171,6 +212,68 @@ const RegisterForm = ({
       </Box>
       <Box sx={textField_container}>
         <TextField
+          {...paternalController.field}
+          sx={textField_styles}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment
+                position="start"
+                sx={{ color: (theme) => theme.palette.icon.main }}
+              >
+                <Male />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment
+                position="end"
+                sx={{ color: "green" }}
+              ></InputAdornment>
+            ),
+            style: {
+              backgroundColor: theme.palette.textFieldBg.main,
+              color: theme.palette.mainText.main,
+            },
+          }}
+          id={paternalController.field.name}
+          label=""
+          placeholder="Apellido paterno"
+          helperText={get(errors, paternal_surname)?.message}
+          error={hasPaternalError}
+        />
+      </Box>
+      <Box sx={textField_container}>
+        <TextField
+          {...maternalController.field}
+          sx={textField_styles}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment
+                position="start"
+                sx={{ color: (theme) => theme.palette.icon.main }}
+              >
+                <Female />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment
+                position="end"
+                sx={{ color: "green" }}
+              ></InputAdornment>
+            ),
+            style: {
+              backgroundColor: theme.palette.textFieldBg.main,
+              color: theme.palette.mainText.main,
+            },
+          }}
+          id={maternalController.field.name}
+          label=""
+          placeholder="Apellido materno"
+          helperText={get(errors, maternal_surname)?.message}
+          error={hasMaternalError}
+        />
+      </Box>
+      <Box sx={textField_container}>
+        <TextField
           {...emailController.field}
           sx={textField_styles}
           InputProps={{
@@ -200,7 +303,70 @@ const RegisterForm = ({
           error={hasEmailError}
         />
       </Box>
-
+      <Box sx={textField_container}>
+        <TextField
+          {...cpController.field}
+          sx={textField_styles}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment
+                position="start"
+                sx={{ color: (theme) => theme.palette.icon.main }}
+              >
+                <LocationOn />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment
+                position="end"
+                sx={{ color: "green" }}
+              ></InputAdornment>
+            ),
+            style: {
+              backgroundColor: theme.palette.textFieldBg.main,
+              color: theme.palette.mainText.main,
+            },
+          }}
+          id={cpController.field.name}
+          type="number"
+          label=""
+          placeholder="Ingresa el código postal"
+          helperText={get(errors, cp)?.message}
+          error={hasCPError}
+        />
+      </Box>
+      <Box sx={textField_container}>
+        <TextField
+          {...birthdateController.field}
+          sx={textField_styles}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment
+                position="start"
+                sx={{ color: (theme) => theme.palette.icon.main }}
+              >
+                <Email />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment
+                position="end"
+                sx={{ color: "green" }}
+              ></InputAdornment>
+            ),
+            style: {
+              backgroundColor: theme.palette.textFieldBg.main,
+              color: theme.palette.mainText.main,
+            },
+          }}
+          id={birthdateController.field.name}
+          type="date"
+          label=""
+          placeholder="Fecha de nacimiento"
+          helperText={get(errors, birthdate)?.message}
+          error={hasBirthdateError}
+        />
+      </Box>
       <Box sx={{ ...textField_container, marginBottom: "1rem" }}>
         <TextField
           {...passController.field}

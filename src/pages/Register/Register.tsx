@@ -2,20 +2,15 @@ import {
   Box,
   Container,
   Typography,
-  TextField,
   useTheme,
-  InputAdornment,
   Button,
 } from "@mui/material";
 import {
   button_container,
   login_btn,
   register_btn,
-  textField_container,
-  textField_styles,
   wrap_all_container,
 } from "./Register.styles";
-import { Email, Lock, Person } from "@mui/icons-material";
 import RegisterForm from "./RegisterForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,7 +21,11 @@ import { useState } from "react";
 
 type FormInputs = {
   name: string;
+  paternal_surname: string;
+  maternal_surname?: string;
   email: string;
+  cp: number;
+  birthdate: Date;
   pass: string;
   confirmPass: string;
   emailRecovery: string;
@@ -42,6 +41,20 @@ const schema = yup.object().shape({
     .string()
     .email("No es un correo valido")
     .required("Campo requerido"),
+  paternal_surname: yup.string().required("Apellido paterno requerido"),
+  maternal_surname: yup.string(),
+  cp: yup.number().required("Código postal requerido"),
+  birthdate: yup
+    .date()
+    .test("adult", "Debes ser mayor de edad", (value) => {
+      value = value as Date;
+      const actualDate = new Date();
+      const birthDate = new Date(value);
+      const age = actualDate.getFullYear() - birthDate.getFullYear();
+      return age >= 18;
+    })
+    .required()
+    .typeError("Ingrese una fecha valida"),
   pass: yup
     .string()
     .min(8, "Debe tener al menos 8 caracteres")
@@ -49,7 +62,7 @@ const schema = yup.object().shape({
   confirmPass: yup
     .string()
     .oneOf([yup.ref("pass")], "La contraseña no coincide")
-    .required(),
+    .required("Se necesita confirmar la contraseña"),
   emailRecovery: yup
     .string()
     .email("No es un correo valido")
@@ -71,7 +84,11 @@ const Register = ({ CreateNewUserService }: Props) => {
   const methods = useForm<FormInputs>({
     defaultValues: {
       name: "",
+      paternal_surname: "",
+      maternal_surname: "",
       email: "",
+      cp: 0,
+      birthdate: new Date(),
       pass: "",
       confirmPass: "",
       emailRecovery: "",
@@ -79,26 +96,32 @@ const Register = ({ CreateNewUserService }: Props) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = methods.handleSubmit(async ({ name, email, pass, emailRecovery }) => {
-    try {
-      const response = await mutateAsync({
-        request: {
-          name: name,
-          email: email,
-          pass: pass,
-          emailRecovery: emailRecovery
-        },
-      });
-      methods.reset();
-      setVeryWeak(false);
-      setWeak(false);
-      setMedium(false);
-      setStrong(false);
-      setPassField("");
-    } catch (error) {
-      console.error("Error creating user", error);
+  const onSubmit = methods.handleSubmit(
+    async ({ name, paternal_surname, maternal_surname, email, cp, birthdate, pass, emailRecovery }) => {
+      try {
+        const response = await mutateAsync({
+          request: {
+            name,
+            paternal_surname,
+            maternal_surname,
+            email: email,
+            cp,
+            birthdate,
+            pass,
+            emailRecovery,
+          },
+        });
+        methods.reset();
+        setVeryWeak(false);
+        setWeak(false);
+        setMedium(false);
+        setStrong(false);
+        setPassField("");
+      } catch (error) {
+        console.error("Error creating user", error);
+      }
     }
-  });
+  );
 
   const theme = useTheme();
 
@@ -156,7 +179,11 @@ const Register = ({ CreateNewUserService }: Props) => {
               >
                 <RegisterForm
                   name="name"
+                  paternal_surname="paternal_surname"
+                  maternal_surname="maternal_surname"
                   email="email"
+                  cp="cp"
+                  birthdate="birthdate"
                   pass="pass"
                   confirmPass="confirmPass"
                   emailRecovery="emailRecovery"
