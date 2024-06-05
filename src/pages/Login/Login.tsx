@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { LoginCredentialsType } from "@services/services_types/Login.types";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 type FormInputs = {
   email: string;
@@ -25,11 +26,17 @@ const schema = yup.object().shape({
 });
 
 const Login = ({ AuthService }: Props) => {
+  const navigate = useNavigate();
+
   const { mutateAsync, isError, error, isSuccess, data } = useMutation({
     mutationKey: ["auth"],
     mutationFn: AuthService,
     onSettled: (data) => {
-      console.log(data);
+      if (data) {
+        console.log(data);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/crud", {replace: true});
+      }
     }
   });
 
@@ -129,7 +136,7 @@ const Login = ({ AuthService }: Props) => {
                     color: theme.palette.success.main,
                   }}
                 >
-                  Usuario logueado {data}
+                  {data.message}
                 </Typography>
               </Box>
             </>

@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PasswordRecovery from "@pages/PasswordRecovery/PasswordRecovery";
 import UpdatePassword from "@pages/PasswordRecovery/UpdatePassword";
 import { UpdatePasswordContextProvider } from "@contexts/UpdatePasswordContext";
+import Crud from "@pages/Crud/Crud";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,11 @@ export const router = createBrowserRouter([
         element: <UpdatePassword UpdatePasswordService={UpdatePasswordImpl}/>,
         errorElement: "",
       },
+      {
+        path: "crud",
+        element: <Crud/>,
+        errorElement: "",
+      }
 
     ],
   },

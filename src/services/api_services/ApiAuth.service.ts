@@ -1,4 +1,5 @@
-import { LoginCredentialsType } from "@services/services_types/Login";
+
+import { LoginCredentialsType } from "@services/services_types/Login.types";
 import axios, { AxiosError } from "axios";
 
 export const ApiAuth: LoginCredentialsType = async ({ request: {
@@ -15,7 +16,7 @@ export const ApiAuth: LoginCredentialsType = async ({ request: {
                 pass: pass,
             }
         });
-        return response.status;
+        return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;

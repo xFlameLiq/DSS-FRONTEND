@@ -7,4 +7,15 @@ export type LoginCredentialsRequest = {
     request: LoginCredentials;
 }
 
-export type LoginCredentialsType = (params: LoginCredentialsRequest) => Promise<number>;
+export type UserAuthenticated = {
+    message: string;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        rol: number;
+    }
+
+}
+
+export type LoginCredentialsType = (params: LoginCredentialsRequest) => Promise<UserAuthenticated>;
