@@ -176,13 +176,15 @@ const Crud = ({
   });
 
   const handleDelete = async (id: number) => {
-    try {
-      await deleteProduct.mutateAsync({ id });
-    } catch (e) {
-      console.log(e);
+    const confirmDelete = window.confirm("¿Está seguro de que desea eliminar este producto?");
+    if (confirmDelete) {
+      try {
+        await deleteProduct.mutateAsync({ id });
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
-
   const handleUpdate = async () => {
     if (editableProduct) {
       try {
