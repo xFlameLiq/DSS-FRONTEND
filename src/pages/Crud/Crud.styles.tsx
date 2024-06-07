@@ -22,8 +22,11 @@ export const rol: SxProps<Theme> = {
 };
 
 
-export const content_container: SxProps<Theme> = {
-    maxWidth: "70%",
+export const create_container: SxProps<Theme> = {
+    maxWidth: {
+        tablet: "70%",
+        xldesktop: "50%",
+    },
     //backgroundColor: "lightcoral",
     margin: "0 auto",
     marginTop: "5rem",
@@ -72,7 +75,7 @@ export const field: SxProps<Theme> = {
 
 
 export const state_container: SxProps<Theme> = {
-    marginTop: "2rem",
+    marginTop: "1rem",
     textAlign: "center",
 };
 
@@ -88,16 +91,45 @@ export const success: SxProps<Theme> = {
     color: "#00554E",
 };
 
-
-
-
-
 export const button_container: SxProps<Theme> = {
     display: "flex",
     justifyContent: "center",
    width: "70%",
    margin: "0 auto",
    marginTop: "2rem",
+};
+
+export const read_container: SxProps<Theme> = {
+    maxWidth: {
+        tablet: "70%",
+        xldesktop: "50%",
+    },
+    //backgroundColor: "lightcoral",
+    margin: "0 auto",
+    padding: "2rem",
+    marginTop: "5rem",
+};
+
+export const header_read: SxProps<Theme> = {
+    backgroundColor: "white",
+};
+
+export const header: SxProps<Theme> = {
+    textAlign: "center",
+    fontWeight: "700",
+    fontSize: "1.5rem",
+};
+
+
+export const delete_update_container: SxProps<Theme> = {
+    maxWidth: {
+        tablet: "70%",
+        xldesktop: "50%",
+    },
+    //backgroundColor: "lightcoral",
+    margin: "0 auto",
+    padding: "2rem",
+    marginTop: "5rem",
 };
 
 

@@ -32,4 +32,4 @@ export type CreateNewProductType = ({request}: ProductRequest) => Promise<number
 
 export type UpdateProductType = ({id, request}: UpdateProduct) => Promise <number>;
 
-export type DeleteProductType = (request: DeleteProduct) => Promise <number>
+export type DeleteProductType = ({id}: DeleteProduct) => Promise <number>

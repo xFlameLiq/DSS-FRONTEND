@@ -4,6 +4,14 @@ import {
   Button,
   IconButton,
   Menu,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
   Toolbar,
   Typography,
   useTheme,
@@ -12,14 +20,16 @@ import {
   appbar,
   button_container,
   captions,
-  content_container,
+  create_container,
+  delete_update_container,
   error,
-  error_container,
   field,
   field_container,
   form_container,
   form_fields,
-  navbar,
+  header,
+  header_read,
+  read_container,
   rol,
   state_container,
   success,
@@ -33,8 +43,13 @@ import InputTextForm from "@components/InputText/InputTextForm";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { register_btn } from "@pages/Login/Login.styles";
-import { CreateNewProductType } from "@services/services_types/Crud.types";
-import { useMutation } from "@tanstack/react-query";
+import {
+  CreateNewProductType,
+  DeleteProductType,
+  GetAllProductsType,
+  UpdateProductType,
+} from "@services/services_types/Crud.types";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 type user = {
   id: number;
@@ -58,15 +73,64 @@ const schema = yup.object().shape({
 
 type Props = {
   CreateNewProductService: CreateNewProductType;
+  GetAllProductsService: GetAllProductsType;
+  DeleteProductService: DeleteProductType;
+  UpdateProductService: UpdateProductType;
 };
 
-const Crud = ({ CreateNewProductService }: Props) => {
+const Crud = ({
+  CreateNewProductService,
+  GetAllProductsService,
+  DeleteProductService,
+  UpdateProductService,
+}: Props) => {
   const theme = useTheme();
   const [user, setUser] = useState<user | null>(null);
+  const [editableProduct, setEditableProduct] = useState<{
+    id: number;
+    name: string;
+    model: string;
+    price: number;
+  } | null>(null);
+
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const getProducts = useQuery({
+    queryKey: ["GetAllProducts"],
+    queryFn: () => GetAllProductsService(),
+  });
 
   const createProduct = useMutation({
-    mutationKey: ["createProduct"],
+    mutationKey: ["CreateNewProduct"],
     mutationFn: CreateNewProductService,
+    onSettled: (data) => {
+      console.log(data);
+      if (data) {
+        alert(`${data.message} ${data.status}`);
+      }
+    },
+  });
+
+  const deleteProduct = useMutation({
+    mutationKey: ["DeleteProduct"],
+    mutationFn: DeleteProductService,
+    onSettled: (data) => {
+      if (data) {
+        alert(data.message);
+        window.location.reload();
+      }
+    },
+  });
+
+  const updateProduct = useMutation({
+    mutationKey: ["UpdateProduct"],
+    mutationFn: UpdateProductService,
+    onSettled: (data) => {
+      if (data) {
+        alert(data.message);
+        window.location.reload();
+      }
+    },
   });
 
   const methods = useForm<FormInputs>({
@@ -105,9 +169,62 @@ const Crud = ({ CreateNewProductService }: Props) => {
           price,
         },
       });
+      methods.reset();
     } catch (e) {
       console.log(e);
     }
+  });
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteProduct.mutateAsync({ id });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (editableProduct) {
+      try {
+        await updateProduct.mutateAsync({
+          id: editableProduct.id,
+          request: {
+            name: editableProduct.name,
+            model: editableProduct.model,
+            price: editableProduct.price,
+          },
+        });
+        setEditableProduct(null);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const handleEdit = (product: {
+    id: number;
+    name: string;
+    model: string;
+    price: number;
+  }) => {
+    setEditableProduct(product);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (editableProduct) {
+      setEditableProduct({
+        ...editableProduct,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const handleSortByPrice = () => {
+    setSortOrder((prevSortOrder) => (prevSortOrder === "asc" ? "desc" : "asc"));
+  };
+
+  const sortedProducts = getProducts.data?.slice().sort((a, b) => {
+    return sortOrder === "asc" ? a.price - b.price : b.price - a.price;
   });
 
   return (
@@ -123,13 +240,13 @@ const Crud = ({ CreateNewProductService }: Props) => {
             <Typography variant="body1" color="initial">
               PRIVILEGIO:
               {user?.rol === 0 ? (
-                <Typography sx={rol}>{` CLIENTE`}</Typography>
+                <Box component="span" sx={rol}>{` CLIENTE`}</Box>
               ) : null}
               {user?.rol === 1 ? (
-                <Typography sx={rol}>{` FACTURA`}</Typography>
+                <Box component="span" sx={rol}>{` FACTURA`}</Box>
               ) : null}
               {user?.rol === 2 ? (
-                <Typography sx={rol}>{` ADMINISTRADOR`}</Typography>
+                <Box component="span" sx={rol}>{` ADMINISTRADOR`}</Box>
               ) : null}
             </Typography>
           </Box>
@@ -140,7 +257,7 @@ const Crud = ({ CreateNewProductService }: Props) => {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box sx={content_container}>
+      {user?.rol === 2 ? <Box sx={create_container}>
         <FormProvider {...methods}>
           <Box sx={form_container}>
             <Box sx={title_container}>
@@ -218,20 +335,149 @@ const Crud = ({ CreateNewProductService }: Props) => {
             {createProduct.isSuccess && (
               <Box sx={state_container}>
                 <Typography sx={success}>
-                  {createProduct.data}
+                  {createProduct.data.message}
                 </Typography>
               </Box>
             )}
-
             <Box sx={button_container}>
               <Button type="submit" sx={register_btn} onClick={onSubmit}>
                 Registrar producto
               </Button>
             </Box>
-            {JSON.stringify(methods.watch())}
           </Box>
         </FormProvider>
+      </Box> : null}
+      
+      <Box sx={read_container}>
+        <Box sx={header_read}>
+          <Typography sx={header}>TABLA DE SOLO LECTURA</Typography>
+        </Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Nombre del Producto</TableCell>
+                <TableCell>Modelo del Producto</TableCell>
+                <TableCell>
+                  <Button 
+                      variant="contained"
+                      color="primary"
+                  onClick={handleSortByPrice}>
+                    Precio {sortOrder === "asc" ? "↑" : "↓"}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedProducts?.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell>{product.id}</TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.model}</TableCell>
+                  <TableCell>{product.price}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
+      {user?.rol === 1  || user?.rol === 2  ?  <Box sx={delete_update_container}>
+        <Box sx={header_read}>
+          <Typography sx={header}>TABLA EDITABLE</Typography>
+        </Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Nombre del Producto</TableCell>
+                <TableCell>Modelo del Producto</TableCell>
+                <TableCell>Precio</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {getProducts.data?.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell>{product.id}</TableCell>
+                  <TableCell>
+                    {editableProduct?.id === product.id ? (
+                      <TextField
+                        name="name"
+                        value={editableProduct.name}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      product.name
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editableProduct?.id === product.id ? (
+                      <TextField
+                        name="model"
+                        value={editableProduct.model}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      product.model
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editableProduct?.id === product.id ? (
+                      <TextField
+                        name="price"
+                        value={editableProduct.price}
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      product.price
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editableProduct?.id === product.id ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleUpdate}
+                        >
+                          Guardar
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => setEditableProduct(null)}
+                        >
+                          Cancelar
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleEdit(product)}
+                        >
+                          Actualizar
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => handleDelete(product.id)}
+                        >
+                          Eliminar
+                        </Button>
+                      </>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box> : null}
+     
     </>
   );
 };

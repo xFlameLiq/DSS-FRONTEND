@@ -18,7 +18,11 @@ export const ApiCreateNewProduct: CreateNewProductType = async ({ request: {
                 price,
             }
         });
-        return response.status;
+        const { message} = response.data;
+        return {
+            status: response.status,
+            message,
+        };
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;
