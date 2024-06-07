@@ -1,20 +1,21 @@
 export type Products = {
     id: number;
     name: string;
-    price: string;
     model: string;
-}
-
-export type ProductRequest = {
-    request: Products;
+    price: number;
 }
 
 export type ProductBody = {
-    id: number;
     name: string;
-    price: string;
     model: string;
+    price: number;
+
 }
+export type ProductRequest = {
+    request: ProductBody;
+}
+
+
 
 export type UpdateProduct = {
     id: number;
@@ -27,8 +28,8 @@ export type DeleteProduct = {
 
 export type GetAllProductsType = () => Promise<Products[]>;
 
-export type CreateNewProductType = (request: Products) => Promise<number>;
+export type CreateNewProductType = ({request}: ProductRequest) => Promise<number>;
 
-export type UpdateProductType = (request: UpdateProduct) => Promise <number>;
+export type UpdateProductType = ({id, request}: UpdateProduct) => Promise <number>;
 
 export type DeleteProductType = (request: DeleteProduct) => Promise <number>
