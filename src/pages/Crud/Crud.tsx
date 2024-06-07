@@ -107,6 +107,7 @@ const Crud = ({
       console.log(data);
       if (data) {
         alert(`${data.message} ${data.status}`);
+        window.location.reload();
       }
     },
   });
