@@ -375,7 +375,7 @@ const Crud = ({
                   <TableCell>{product.id}</TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.model}</TableCell>
-                  <TableCell>{product.price}</TableCell>
+                  <TableCell>${product.price}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -431,7 +431,7 @@ const Crud = ({
                         onChange={handleChange}
                       />
                     ) : (
-                      product.price
+                      `$${product.price}`
                     )}
                   </TableCell>
                   <TableCell>
